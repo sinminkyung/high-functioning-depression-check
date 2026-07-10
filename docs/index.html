@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>고기능 우울증 자가점검</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --ink:#2B3440;
+  --ink-soft:#5B6672;
+  --paper:#F7F6F2;
+  --card:#FFFFFF;
+  --sage:#6E8B7B;
+  --sage-deep:#4E6B5C;
+  --sage-mist:#E4ECE7;
+  --amber:#C99A5B;
+  --amber-mist:#F5EBDC;
+  --rose:#B96A5E;
+  --rose-mist:#F6E6E2;
+  --line:#E3E1DA;
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Pretendard Variable',Pretendard,-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.65;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:0 20px 48px;
+}
+.wrap{width:100%;max-width:560px;margin:0 auto}
+.screen{display:none;animation:fade .45s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .screen{animation:none}
+  *{transition:none!important}
+}
+
+/* ---------- intro ---------- */
+.eyebrow{
+  margin-top:56px;
+  font-size:12.5px;
+  letter-spacing:.14em;
+  font-weight:600;
+  color:var(--sage-deep);
+  text-transform:uppercase;
+}
+h1{
+  font-size:clamp(26px,6vw,34px);
+  font-weight:800;
+  letter-spacing:-.02em;
+  line-height:1.3;
+  margin:10px 0 20px;
+}
+.intro-lead{
+  font-size:15.5px;
+  color:var(--ink-soft);
+  margin-bottom:26px;
+}
+.intro-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:22px 24px;
+  margin-bottom:14px;
+}
+.intro-card h2{
+  font-size:14px;
+  font-weight:700;
+  color:var(--sage-deep);
+  margin-bottom:8px;
+}
+.intro-card p{font-size:14.5px;color:var(--ink-soft)}
+.notice{
+  font-size:13px;
+  color:var(--ink-soft);
+  background:var(--sage-mist);
+  border-radius:12px;
+  padding:14px 16px;
+  margin:18px 0 28px;
+}
+.notice strong{color:var(--sage-deep)}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:block;
+  width:100%;
+  border:none;
+  border-radius:14px;
+  padding:17px;
+  font-family:inherit;
+  font-size:16.5px;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease, background .15s ease;
+}
+.btn:focus-visible{outline:3px solid var(--sage);outline-offset:2px}
+.btn-primary{
+  background:var(--sage-deep);
+  color:#fff;
+  box-shadow:0 4px 14px rgba(78,107,92,.25);
+}
+.btn-primary:hover{background:#3F594C}
+.btn-primary:active{transform:scale(.985)}
+.btn-ghost{
+  background:transparent;
+  color:var(--ink-soft);
+  font-weight:600;
+  font-size:14.5px;
+  padding:12px;
+  margin-top:10px;
+}
+.btn-ghost:hover{color:var(--ink)}
+
+/* ---------- question screen ---------- */
+.q-top{margin-top:44px;display:flex;justify-content:space-between;align-items:baseline}
+.q-count{font-size:13.5px;font-weight:700;color:var(--sage-deep);letter-spacing:.04em}
+.q-count span{color:var(--ink-soft);font-weight:500}
+.progress{
+  height:6px;background:#E7E5DE;border-radius:99px;margin:12px 0 40px;overflow:hidden;
+}
+.progress-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--sage),var(--sage-deep));
+  border-radius:99px;
+  transition:width .35s ease;
+}
+.q-text{
+  font-size:clamp(19px,5vw,23px);
+  font-weight:700;
+  line-height:1.55;
+  letter-spacing:-.01em;
+  min-height:120px;
+  margin-bottom:36px;
+  word-break:keep-all;
+}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ans-btn{
+  border:2px solid var(--line);
+  background:var(--card);
+  border-radius:16px;
+  padding:22px 10px;
+  font-family:inherit;
+  font-size:18px;
+  font-weight:700;
+  color:var(--ink);
+  cursor:pointer;
+  transition:border-color .15s, background .15s, transform .1s;
+}
+.ans-btn:hover{border-color:var(--sage)}
+.ans-btn:active{transform:scale(.97)}
+.ans-btn:focus-visible{outline:3px solid var(--sage);outline-offset:2px}
+.ans-btn.selected-yes{border-color:var(--sage-deep);background:var(--sage-mist)}
+.ans-btn.selected-no{border-color:var(--ink-soft);background:#EFEEEA}
+.ans-sub{display:block;font-size:12.5px;font-weight:500;color:var(--ink-soft);margin-top:4px}
+.nav-back{
+  margin-top:26px;
+  background:none;border:none;
+  font-family:inherit;font-size:14px;font-weight:600;
+  color:var(--ink-soft);cursor:pointer;padding:8px 4px;
+}
+.nav-back:hover{color:var(--ink)}
+.nav-back:disabled{opacity:.35;cursor:default}
+
+/* ---------- result ---------- */
+.result-eyebrow{
+  margin-top:52px;
+  font-size:12.5px;letter-spacing:.14em;font-weight:600;
+  color:var(--sage-deep);text-transform:uppercase;
+}
+.result-hero{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:34px 26px 30px;
+  text-align:center;
+  margin:16px 0 18px;
+}
+.gauge{position:relative;width:180px;height:100px;margin:0 auto 8px}
+.gauge svg{width:100%;height:auto;overflow:visible}
+.gauge-track{fill:none;stroke:#ECEAE3;stroke-width:14;stroke-linecap:round}
+.gauge-fill{fill:none;stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset 1s ease .2s}
+.result-score{font-size:44px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.result-score small{font-size:17px;font-weight:600;color:var(--ink-soft);letter-spacing:0}
+.result-date{margin-top:12px;font-size:12.5px;color:#9AA0A8}
+.result-band{
+  display:inline-block;
+  margin-top:14px;
+  padding:7px 16px;
+  border-radius:99px;
+  font-size:14px;
+  font-weight:700;
+}
+.band-low{background:var(--sage-mist);color:var(--sage-deep)}
+.band-mid{background:var(--amber-mist);color:#96702F}
+.band-high{background:var(--rose-mist);color:var(--rose)}
+.result-body{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px 24px;
+  margin-bottom:14px;
+}
+.result-body h2{font-size:15.5px;font-weight:800;margin-bottom:10px}
+.result-body p{font-size:14.5px;color:var(--ink-soft);word-break:keep-all}
+.result-body p + p{margin-top:10px}
+.crisis{
+  background:var(--rose-mist);
+  border:1px solid #E8CCC6;
+  border-radius:var(--radius);
+  padding:22px 24px;
+  margin-bottom:14px;
+}
+.crisis h2{font-size:15px;font-weight:800;color:var(--rose);margin-bottom:8px}
+.crisis p{font-size:14px;color:#7C4A41;word-break:keep-all}
+.crisis .lines{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.crisis a{
+  display:flex;justify-content:space-between;align-items:center;
+  background:#fff;border-radius:12px;padding:13px 16px;
+  text-decoration:none;color:var(--ink);font-size:14.5px;font-weight:700;
+}
+.crisis a span{font-size:13px;font-weight:600;color:var(--rose)}
+.foot{
+  margin-top:22px;
+  font-size:12px;
+  color:#9AA0A8;
+  text-align:center;
+  word-break:keep-all;
+}
+.foot p+p{margin-top:6px}
+
+/* ---------- image save overlay ---------- */
+.img-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(30,35,40,.92);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;gap:16px;
+  overflow-y:auto;
+}
+.img-overlay-tip{
+  color:#F2F1EC;font-size:14.5px;text-align:center;word-break:keep-all;
+}
+.img-overlay-tip strong{color:#A8C7B5}
+.img-overlay img{
+  max-width:100%;max-height:66vh;
+  border-radius:14px;
+  box-shadow:0 10px 40px rgba(0,0,0,.4);
+}
+.img-overlay-close{
+  border:1.5px solid rgba(255,255,255,.4);
+  background:transparent;color:#fff;
+  font-family:inherit;font-size:15px;font-weight:700;
+  border-radius:12px;padding:12px 36px;cursor:pointer;
+}
+.img-overlay-close:active{background:rgba(255,255,255,.12)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen active" id="screen-intro">
+    <p class="eyebrow">Self-Check · 자가점검</p>
+    <h1>나는 고기능 우울증일까?</h1>
+    <p class="intro-lead">겉으로는 일상을 잘 유지하고 있지만, 마음속으로는 지치고 무거운 상태가 이어지고 있지는 않은지 확인해 보는 12문항 자가점검입니다.</p>
+
+    <div class="intro-card">
+      <h2>응답 방법</h2>
+      <p>최근 자신의 상태를 떠올리며, 각 질문에 <strong>예</strong> 또는 <strong>아니오</strong>로 답해 주세요. 정답은 없으며, 솔직하게 응답할수록 결과가 더 의미 있습니다. 소요 시간은 약 2–3분입니다.</p>
+    </div>
+
+    <div class="notice">
+      <strong>안내</strong> · 본 자가점검은 자기 이해를 돕기 위한 선별용 도구이며, 정신건강 문제에 대한 <strong>진단을 대신하지 않습니다</strong>. 결과와 관계없이 어려움이 지속된다면 전문가와의 상담을 권합니다.
+    </div>
+
+    <button class="btn btn-primary" onclick="startTest()">점검 시작하기</button>
+  </section>
+
+  <!-- ============ QUESTIONS ============ -->
+  <section class="screen" id="screen-question">
+    <div class="q-top">
+      <p class="q-count"><span id="q-num-current">1</span><span> / 12</span></p>
+    </div>
+    <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
+    <p class="q-text" id="q-text"></p>
+    <div class="answers">
+      <button class="ans-btn" id="btn-yes" onclick="answer(true)">예<span class="ans-sub">그런 적이 있다</span></button>
+      <button class="ans-btn" id="btn-no" onclick="answer(false)">아니오<span class="ans-sub">그렇지 않다</span></button>
+    </div>
+    <button class="nav-back" id="btn-back" onclick="goBack()">← 이전 문항</button>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section class="screen" id="screen-result">
+    <p class="result-eyebrow">Result · 결과</p>
+    <div class="result-hero">
+      <div class="gauge">
+        <svg viewBox="0 0 200 110" aria-hidden="true">
+          <path class="gauge-track" d="M 15 100 A 85 85 0 0 1 185 100"/>
+          <path class="gauge-fill" id="gauge-fill" d="M 15 100 A 85 85 0 0 1 185 100"/>
+        </svg>
+      </div>
+      <p class="result-score"><span id="result-count">0</span><small> / 12개 ‘예’</small></p>
+      <span class="result-band" id="result-band"></span>
+      <p class="result-date" id="result-date"></p>
+    </div>
+
+    <div class="crisis" id="crisis-box" style="display:none">
+      <h2>지금, 잠시 이 안내를 읽어 주세요</h2>
+      <p>삶의 무의미함이나 죽음에 대한 생각이 이어지고 있다면, 혼자 견디기보다 지금 도움을 받는 것이 가장 중요합니다. 아래 연락처는 24시간 연결됩니다.</p>
+      <div class="lines">
+        <a href="tel:109">자살예방 상담전화 <span>109</span></a>
+        <a href="tel:1577-0199">정신건강 위기상담 <span>1577-0199</span></a>
+      </div>
+    </div>
+
+    <div class="result-body">
+      <h2 id="result-title"></h2>
+      <p id="result-desc"></p>
+      <p id="result-next"></p>
+    </div>
+
+    <button class="btn btn-primary" id="btn-download" onclick="downloadResult()">결과 이미지 저장하기</button>
+    <button class="btn btn-ghost" onclick="restart()">다시 점검하기</button>
+
+    <div class="foot">
+      <p>본 결과는 선별 목적의 참고 자료이며 임상적 진단이 아닙니다.<br>정확한 평가와 상담이 필요하시면 담당 선생님께 결과를 보여주고 이야기 나누어 주세요.</p>
+      <p>출처: 도서 『고기능 우울증』 자가점검 문항 기반 · 임상심리전문가 신민경 제공</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const QUESTIONS = [
+  "2주 이상 감정적으로 무감각하거나 소외된 느낌이 든 적이 있는가?",
+  "최근 수면 패턴에 큰 변화가 있어, 평소보다 지나치게 많이 자거나 너무 적게 잔 적이 있는가?",
+  "평소와 달리 식욕이 증가하거나 감소하는 등 식사 습관에 변화가 있었는가?",
+  "다른 사람들이 괜찮다고 해도, 자주 자신이 부족하다고 느끼거나 과도한 죄책감에 시달린 적이 있는가?",
+  "만성적인 에너지 저하나 번아웃으로 인해 일상적인 일을 수행하는 데 어려움을 겪은 적이 있는가?",
+  "미래나 현재 상황에 대해 희망이 없다고 느끼며, 절망감을 경험한 적이 있는가?",
+  "이전에는 쉽게 했던 일에 집중하기 어렵거나, 마무리 짓기가 힘들다고 느낀 적이 있는가?",
+  "예전에는 즐거웠던 활동에서 더 이상 만족을 느끼지 못하고, 초조하거나 답답함을 느낀 적이 있는가?",
+  "삶의 무의미함에 대한 생각이 계속되거나, 죽음이나 자살에 대해 이전보다 더 자주 떠올리게 되었는가?",
+  "평소와 달리 몸이 무겁고 움직임이 느려져 일상생활에 지장이 있었는가?",
+  "이전에 즐거움을 주던 취미나 활동에 더 이상 흥미를 느끼지 못한 적이 있는가?",
+  "다른 사람에게 부담을 주고 싶지 않아, 자신의 문제에 대해 도움을 요청하는 것을 자주 피하게 되는가?"
+];
+const SUICIDE_ITEM_INDEX = 8; // 9번 문항
+
+let current = 0;
+let responses = new Array(QUESTIONS.length).fill(null);
+
+const $ = id => document.getElementById(id);
+
+function show(screenId){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(screenId).classList.add('active');
+  window.scrollTo({top:0});
+}
+
+function startTest(){
+  current = 0;
+  responses = new Array(QUESTIONS.length).fill(null);
+  renderQuestion();
+  show('screen-question');
+}
+
+function renderQuestion(){
+  $('q-num-current').textContent = current + 1;
+  $('q-text').textContent = QUESTIONS[current];
+  $('progress-bar').style.width = (current / QUESTIONS.length * 100) + '%';
+  $('btn-back').disabled = current === 0;
+  // 이전 응답 표시
+  const yes = $('btn-yes'), no = $('btn-no');
+  yes.classList.remove('selected-yes');
+  no.classList.remove('selected-no');
+  if(responses[current] === true) yes.classList.add('selected-yes');
+  if(responses[current] === false) no.classList.add('selected-no');
+}
+
+function answer(isYes){
+  responses[current] = isYes;
+  // 짧은 선택 피드백 후 다음으로
+  const btn = isYes ? $('btn-yes') : $('btn-no');
+  btn.classList.add(isYes ? 'selected-yes' : 'selected-no');
+  setTimeout(() => {
+    if(current < QUESTIONS.length - 1){
+      current++;
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }, 220);
+}
+
+function goBack(){
+  if(current > 0){
+    current--;
+    renderQuestion();
+  }
+}
+
+function showResult(){
+  const count = responses.filter(r => r === true).length;
+  $('result-count').textContent = count;
+
+  const band = $('result-band');
+  const title = $('result-title');
+  const desc = $('result-desc');
+  const next = $('result-next');
+  const fill = $('gauge-fill');
+
+  // 게이지 (반원 둘레 ≈ 267)
+  const ARC = 267;
+  const ratio = count / 12;
+  fill.style.strokeDasharray = ARC;
+  fill.style.strokeDashoffset = ARC;
+  // 강제 리플로우 후 애니메이션
+  void fill.getBoundingClientRect();
+  fill.style.strokeDashoffset = ARC * (1 - ratio);
+
+  band.classList.remove('band-low','band-mid','band-high');
+
+  if(count <= 3){
+    fill.style.stroke = '#6E8B7B';
+    band.classList.add('band-low');
+    band.textContent = '양호한 상태 (0–3개)';
+    title.textContent = '현재 상태는 양호한 편입니다';
+    desc.textContent = '‘예’ 응답이 3개 이하로, 고기능 우울의 징후가 없거나 있더라도 매우 경미한 수준입니다. 지금의 생활 리듬과 마음을 돌보는 습관을 잘 유지하고 계신 것으로 보입니다.';
+    next.textContent = '앞으로도 스트레스가 쌓일 때 스스로를 점검하는 습관을 이어가면, 마음 건강을 안정적으로 지켜갈 수 있습니다.';
+  } else if(count <= 7){
+    fill.style.stroke = '#C99A5B';
+    band.classList.add('band-mid');
+    band.textContent = '중등도 수준 (4–7개)';
+    title.textContent = '중등도 수준의 신호가 확인됩니다';
+    desc.textContent = '‘예’ 응답이 4–7개로, 겉으로는 일상을 유지하고 있어도 내면적으로는 상당한 심리적 부담이 누적되어 있을 가능성이 있습니다. 지금은 스스로의 상태를 돌보는 노력이 필요한 시점입니다.';
+    next.textContent = '수면·식사·활동 등 기본 생활 리듬을 회복하는 것부터 시작해 보시고, 이 상태가 지속되거나 힘들게 느껴진다면 상담 시간에 함께 이야기 나누어 보세요.';
+  } else {
+    fill.style.stroke = '#B96A5E';
+    band.classList.add('band-high');
+    band.textContent = '주의가 필요한 수준 (8–12개)';
+    title.textContent = '주의가 필요한 수준입니다';
+    desc.textContent = '‘예’ 응답이 8개 이상으로, 심리적 어려움이 상당히 누적되어 있으며 일상 기능에도 영향을 줄 수 있는 상태로 보입니다. 이 결과를 혼자 감당하려 하기보다, 전문가와 함께 다루는 것이 중요합니다.';
+    next.textContent = '가능한 한 빠른 시일 내에 담당 선생님 또는 정신건강 전문가와 이 결과를 공유하고, 필요한 지원을 함께 계획해 보시길 권합니다.';
+  }
+
+  // 자살 사고 문항 응답 또는 고위험 구간 → 위기 안내 표시
+  $('crisis-box').style.display =
+    (responses[SUICIDE_ITEM_INDEX] === true || count >= 8) ? 'block' : 'none';
+
+  // 검사일 표시
+  const now = new Date();
+  $('result-date').textContent =
+    '검사일: ' + now.getFullYear() + '년 ' + (now.getMonth()+1) + '월 ' + now.getDate() + '일';
+
+  show('screen-result');
+}
+
+async function downloadResult(){
+  const target = $('screen-result');
+  const dlBtn = $('btn-download');
+  const originalText = dlBtn.textContent;
+  dlBtn.textContent = '이미지 생성 중...';
+  dlBtn.disabled = true;
+
+  try {
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+    const canvas = await html2canvas(target, {
+      backgroundColor: '#F7F6F2',
+      scale: 2,
+      useCORS: true,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      ignoreElements: el => el.classList && el.classList.contains('btn'),
+      onclone: doc => {
+        doc.querySelectorAll('.screen').forEach(s => s.style.animation = 'none');
+      }
+    });
+
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    if(!blob) throw new Error('blob 생성 실패');
+
+    const now = new Date();
+    const stamp = now.getFullYear()
+      + String(now.getMonth()+1).padStart(2,'0')
+      + String(now.getDate()).padStart(2,'0');
+    const fileName = '자가점검결과_' + stamp + '.png';
+
+    // 1순위: 모바일 공유 시트 (iOS/Android → '이미지 저장' 선택 가능)
+    const file = new File([blob], fileName, {type:'image/png'});
+    if(navigator.canShare && navigator.canShare({files:[file]})){
+      try {
+        await navigator.share({files:[file], title:'자가점검 결과'});
+        return;
+      } catch(e){
+        if(e.name === 'AbortError') return; // 사용자가 공유 취소
+        // 공유 실패 시 아래 폴백으로 진행
+      }
+    }
+
+    // 2순위: 데스크톱 브라우저 다운로드
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if(!isMobile){
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.download = fileName;
+      a.href = url;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      return;
+    }
+
+    // 3순위: 이미지 오버레이 표시 → 길게 눌러 저장
+    showImageOverlay(canvas.toDataURL('image/png'));
+
+  } catch(err){
+    alert('이미지 생성에 실패했습니다. 화면을 캡처(스크린샷)하여 저장해 주세요.');
+  } finally {
+    dlBtn.textContent = originalText;
+    dlBtn.disabled = false;
+  }
+}
+
+function showImageOverlay(dataUrl){
+  const overlay = document.createElement('div');
+  overlay.className = 'img-overlay';
+  overlay.innerHTML =
+    '<p class="img-overlay-tip">아래 이미지를 <strong>길게 눌러</strong> ‘이미지 저장’을 선택해 주세요.</p>' +
+    '<img src="' + dataUrl + '" alt="자가점검 결과 이미지">' +
+    '<button class="img-overlay-close">닫기</button>';
+  overlay.querySelector('.img-overlay-close').onclick = () => overlay.remove();
+  document.body.appendChild(overlay);
+}
+
+function restart(){
+  show('screen-intro');
+}
+</script>
+</body>
+</html>
